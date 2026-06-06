@@ -310,7 +310,8 @@
       rgba(238, 196, 110, 0.28) 38%,
       transparent 100%);
     mix-blend-mode: screen;
-    opacity: var(--illume, 0);
+    /* scaled by scroll (--illume), and breathing with the candle (--pulse) */
+    opacity: calc(var(--illume, 0) * (0.6 + var(--pulse, 0.5) * 0.4));
   }
   /* Drifting gold dust; each mote's brightness tracks --pulse (the reflection) */
   .hero-motes {
