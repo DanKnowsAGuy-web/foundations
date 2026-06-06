@@ -282,8 +282,8 @@
   /* Pulsing candlelight: a soft warm bloom that breathes with --pulse */
   .hero-glow {
     position: absolute;
-    top: 32%; left: 50%;
-    width: min(96vw, 820px); aspect-ratio: 1;
+    top: 54%; left: 50%;
+    width: min(86vw, 700px); aspect-ratio: 1;
     translate: -50% -50%;
     scale: calc(1 + var(--pulse, 0.5) * 0.07);
     z-index: 0;
@@ -309,10 +309,10 @@
     /* full-bleed, framed a little higher. Kept visually fixed to the viewport
        by a scroll transform in JS (background-attachment:fixed fails on mobile),
        clipped to the hero so He never ghosts over the content below. */
-    background: url('assets/Christ.jpg') center 12% / cover no-repeat;
+    background: url('assets/Christ.jpg') center 7% / cover no-repeat;
     mix-blend-mode: screen;
     /* brightens with scroll: captured by the growing illumination */
-    opacity: calc(0.07 + var(--pulse, 0.5) * 0.06 + var(--illume, 0) * 0.09);
+    opacity: calc(0.095 + var(--pulse, 0.5) * 0.06 + var(--illume, 0) * 0.085);
     filter: saturate(0.9) contrast(1.05);
     will-change: transform;
   }
@@ -367,7 +367,8 @@
     position: relative;
     z-index: 2;
     text-align: center;
-    padding-top: var(--space-2xl);
+    /* extra headroom so Christ's eyes sit clear above the wordmark */
+    padding-top: calc(var(--space-2xl) + 7vh);
     /* extra dark runway below the intro: more hero to scroll through, so the
        illumination transition has more time to play out */
     padding-bottom: calc(var(--space-2xl) + 22vh);
