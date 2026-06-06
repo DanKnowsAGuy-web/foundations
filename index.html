@@ -269,9 +269,11 @@
     inset: 0;
     z-index: 0;
     pointer-events: none;
-    background: url('assets/Christ.jpg') center 38% / contain no-repeat;
+    /* full-bleed (cover) and locked to the viewport (fixed) so the hero scrolls
+       past Him while He stays still; framed a little higher. */
+    background: url('assets/Christ.jpg') center 14% / cover fixed no-repeat;
     mix-blend-mode: screen;
-    opacity: calc(0.09 + var(--pulse, 0.5) * 0.07);
+    opacity: calc(0.07 + var(--pulse, 0.5) * 0.05);
     filter: saturate(0.9) contrast(1.05);
   }
   /* Drifting gold dust; each mote's brightness tracks --pulse (the reflection) */
