@@ -1,0 +1,1534 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Foundations · A Program of Catechetical Formation</title>
+<meta name="description" content="Foundations is a catechism program of the Orthodox Church, a guided entry into the life of the Church structured around four essential disciplines of Christian formation: Prayer, Fasting, Belonging, and The Process." />
+
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=IM+Fell+English:ital@0;1&family=EB+Garamond:wght@400;500&family=Cinzel:wght@400;500&display=swap" rel="stylesheet" />
+
+<style>
+  /* ============================================================
+     FOUNDATIONS — Illuminated Warmth
+     Byzantine sacred art × Western classical education.
+     Single file. No frameworks. Vellum, ink, and gold.
+     ============================================================ */
+
+  :root {
+    /* Palette — OKLCH primitives (perceptually uniform; exact round-trip of
+       the brief's source hexes, so the brand identity is unchanged). */
+    --vellum:        oklch(0.8980 0.0380 83.50);  /* aged vellum — deeper, warmer */
+    --vellum-deep:   oklch(0.8520 0.0420 80.00);  /* tea-stained edge tone        */
+    --ivory:         oklch(0.9645 0.0261 90.10);  /* #FAF3E0 */
+    --ink:           oklch(0.1894 0.0229 72.29);  /* #1A1208 */
+    --ink-soft:      oklch(0.3062 0.0387 78.54);  /* #3A2D18 */
+    --gold:          oklch(0.6595 0.1213 80.69);  /* #B8892A */
+    --gold-bright:   oklch(0.7534 0.1274 84.93);  /* #D4A843 */
+    --gold-light:    oklch(0.8470 0.1350 89.18);  /* #F0C85A */
+    --gold-deep:     oklch(0.4760 0.0930 79.00);  /* contrast-safe small text on aged vellum */
+    --crimson:       oklch(0.3916 0.1245 15.86);  /* #7A1F2E */
+    --crimson-soft:  oklch(0.4834 0.1287 12.60);  /* #99394A */
+    --ink-warm:      oklch(0.2145 0.0313 73.57);  /* #221708 — dark-band top   */
+    --vellum-faded:  oklch(0.9174 0.0429 89.36);  /* #EFE3C4 — text on dark band */
+
+    /* Per-discipline liturgical accents (set on each panel; default = gold).
+       Restrained: each tints only its numeral and faintly its icon. */
+    --accent: var(--gold-deep);
+
+    /* Type families */
+    --font-display: 'IM Fell English', 'Hoefler Text', Georgia, serif;
+    --font-body:    'EB Garamond', Georgia, 'Times New Roman', serif;
+    --font-caps:    'Cinzel', 'Trajan Pro', Georgia, serif;
+
+    /* Type scale — perfect fourth (≈1.333), anchored at a fixed 19px body.
+       Headings fluid (content page); body & labels fixed for steady reading. */
+    --text-caption: 0.78rem;                              /* small caps labels   */
+    --text-meta:    0.92rem;                              /* sub-labels          */
+    --text-body:    1.1875rem;                            /* 19px — long prose   */
+    --text-lead:    clamp(1.28rem, 1.1rem + 0.7vw, 1.5rem); /* intro / lead text */
+    --text-h3:      clamp(1.6rem, 1.3rem + 1.1vw, 2.1rem);  /* panel titles      */
+    --text-h2:      clamp(1.95rem, 1.45rem + 2.1vw, 3rem);  /* section headings  */
+    --text-display: clamp(3.4rem, 9vw + 0.5rem, 6rem);     /* hero — ≤96px cap   */
+
+    --leading-body: 1.72;
+    --leading-tight: 1.08;
+
+    /* Fluid spacing scale — 4pt base, breathes on larger viewports.
+       Used for all structural rhythm so spacing is composed, not invented. */
+    --space-2xs: clamp(0.5rem,  0.46rem + 0.18vw, 0.625rem);  /*  8–10 */
+    --space-xs:  clamp(0.75rem, 0.65rem + 0.45vw, 1rem);      /* 12–16 */
+    --space-sm:  clamp(1rem,    0.85rem + 0.65vw, 1.5rem);    /* 16–24 */
+    --space-md:  clamp(1.5rem,  1.2rem  + 1.3vw,  2.25rem);   /* 24–36 */
+    --space-lg:  clamp(2.25rem, 1.7rem  + 2.4vw,  3.5rem);    /* 36–56 */
+    --space-xl:  clamp(3.5rem,  2.6rem  + 4vw,    6rem);      /* 56–96 */
+    --space-2xl: clamp(5rem,    3.6rem  + 6vw,    8.5rem);    /* 80–136: major breaks */
+
+    /* Motion */
+    --ease-incense: cubic-bezier(0.22, 1, 0.36, 1);
+    --ease-cinema:  cubic-bezier(0.16, 1, 0.3, 1); /* slower, weightier reveal */
+
+    /* Reactive emboss light direction (default: lit from above).
+       Updated by the pointer loop; static fallback under reduced motion. */
+    --emb-x: 0px;
+    --emb-y: -1.5px;
+
+    /* Semantic z-index scale */
+    --z-texture: 1;
+    --z-content: 2;
+    --z-grain: 40;
+    --z-overlay: 50;
+
+    /* Rhythm */
+    --measure: 64ch;
+  }
+
+  *, *::before, *::after { box-sizing: border-box; }
+
+  html { -webkit-text-size-adjust: 100%; scroll-behavior: smooth; }
+
+  /* Lenis momentum scroll */
+  html.lenis, html.lenis body { height: auto; }
+  .lenis.lenis-smooth { scroll-behavior: auto !important; }
+  .lenis.lenis-stopped { overflow: hidden; }
+
+  body {
+    margin: 0;
+    font-family: var(--font-body);
+    font-size: var(--text-body);
+    line-height: var(--leading-body);
+    /* Old-press authenticity: kerning, standard + contextual ligatures,
+       oldstyle figures that sit on the baseline like a printed book. */
+    font-kerning: normal;
+    font-variant-ligatures: common-ligatures contextual;
+    font-variant-numeric: oldstyle-nums proportional-nums;
+    font-optical-sizing: auto;
+    color: var(--ink);
+    background-color: var(--vellum);
+    background-image:
+      radial-gradient(120% 80% at 50% -10%, rgba(212, 168, 67, 0.10), transparent 60%),
+      linear-gradient(170deg, var(--vellum) 0%, var(--vellum-deep) 100%);
+    background-attachment: fixed;
+    text-rendering: optimizeLegibility;
+    -webkit-font-smoothing: antialiased;
+    overflow-x: hidden;
+  }
+
+  /* ---- Texture layers: material, not pattern ----
+     Depth comes from grain + soft paper unevenness + light, never geometry. */
+  .texture {
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+  }
+  /* Soft aged-paper mottle (large, slow blotches) sits BEHIND content,
+     giving the surface an uneven, hand-made depth. */
+  .texture--mottle {
+    z-index: var(--z-texture);
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='m'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.014' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23m)'/%3E%3C/svg%3E");
+    opacity: 0.62;
+    mix-blend-mode: soft-light;
+  }
+  /* Fine film grain laid OVER the whole composition, unifying every section
+     in the same grit (the high-end, tactile layer). */
+  .texture--grain {
+    z-index: var(--z-grain);
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='g'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.92' numOctaves='4' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23g)'/%3E%3C/svg%3E");
+    opacity: 0.23;
+    mix-blend-mode: overlay;
+  }
+  /* Soft edge vignette: gentle darkening at the page edges for depth */
+  .texture--vignette {
+    z-index: 39;
+    background: radial-gradient(135% 115% at 50% 42%, transparent 58%, rgba(26, 18, 8, 0.16) 100%);
+  }
+
+  /* ---- Layout scaffolding ---- */
+  .page { position: relative; z-index: var(--z-content); }
+  .shell {
+    width: min(92%, 1060px);
+    margin-inline: auto;
+  }
+  .prose { max-width: var(--measure); margin-inline: auto; }
+
+  section { padding-block: var(--space-xl); }
+
+  /* ---- Typography ---- */
+  h1, h2, h3 {
+    font-family: var(--font-display);
+    font-weight: 400;
+    line-height: var(--leading-tight);
+    margin: 0;
+    text-wrap: balance;
+    /* Let the display face use its full old-press repertoire */
+    font-variant-ligatures: common-ligatures discretionary-ligatures contextual;
+    font-feature-settings: "liga" 1, "dlig" 1, "calt" 1;
+  }
+  p { margin: 0 0 1.2em; text-wrap: pretty; }
+  p:last-child { margin-bottom: 0; }
+
+  .label {
+    font-family: var(--font-caps);
+    text-transform: uppercase;
+    letter-spacing: 0.34em;
+    font-size: var(--text-caption);
+    font-weight: 500;
+    color: var(--gold-deep);
+    margin: 0;
+  }
+
+  /* ---- Embossed gilt (display only) ----
+     Solid antique gold struck in relief, not a flat clipped gradient.
+     The light direction (--emb-x/--emb-y) follows the pointer, so the metal
+     appears to catch light as you move: highlight on the lit edge, a recessed
+     shadow opposite, a cast shadow for depth, and a faint gilt halo. */
+  .foil {
+    color: #C9A24C;
+    /* gold-leaf grain: faint flaking blended over the gold, clipped to type */
+    background-color: #C9A24C;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Cfilter id='lf'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.045' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23lf)'/%3E%3C/svg%3E");
+    background-size: 120px 120px;
+    background-blend-mode: soft-light;
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    text-shadow:
+      var(--emb-x) var(--emb-y) 0.4px rgba(255, 244, 212, 0.6),                        /* lit bevel    */
+      calc(var(--emb-x) * -1) calc(var(--emb-y) * -1) 0.6px rgba(38, 25, 4, 0.82),      /* recess       */
+      0 0 1px rgba(255, 248, 224, 0.5),                                                /* specular     */
+      0 2px 2px rgba(0, 0, 0, 0.42),                                                    /* contact      */
+      0 11px 26px rgba(0, 0, 0, 0.52),                                                  /* depth cast   */
+      0 0 42px rgba(212, 168, 67, 0.22);                                               /* gilt halo    */
+  }
+  @supports not ((-webkit-background-clip: text) or (background-clip: text)) {
+    .foil { -webkit-text-fill-color: #C9A24C; }
+  }
+
+  /* ============================================================
+     HERO — the dark narthex (enter through shadow into light)
+     ============================================================ */
+  /* A single registered heartbeat: the glow's intensity and the motes'
+     brightness both read --pulse, so the dust catches every pulse of light. */
+  @property --pulse {
+    syntax: "<number>";
+    inherits: true;
+    initial-value: 0.5;
+  }
+  @keyframes pulse {
+    0%, 100% { --pulse: 0.32; }
+    50%      { --pulse: 1; }
+  }
+
+  .hero-band {
+    position: relative;
+    isolation: isolate;
+    overflow: hidden;
+    background: radial-gradient(150% 125% at 50% 0%, var(--ink-warm), oklch(0.115 0.016 68) 60%);
+    animation: pulse 7.5s ease-in-out infinite;
+  }
+  /* Soft vignette only: depth from shadow at the edges, no geometry */
+  .hero-band::before {
+    content: "";
+    position: absolute; inset: 0; z-index: 0;
+    pointer-events: none;
+    background:
+      radial-gradient(135% 100% at 50% 28%, transparent 50%, rgba(0,0,0,0.30) 78%, rgba(0,0,0,0.6) 100%);
+  }
+  /* Bottom fade: the darkness dissolves into the parchment nave below */
+  .hero-band::after {
+    content: "";
+    position: absolute; left: 0; right: 0; bottom: 0; z-index: 1;
+    height: clamp(48px, 6vh, 84px);
+    pointer-events: none;
+    background: linear-gradient(180deg, transparent, var(--vellum));
+  }
+  /* Pulsing candlelight: a soft warm bloom that breathes with --pulse */
+  .hero-glow {
+    position: absolute;
+    top: 32%; left: 50%;
+    width: min(96vw, 820px); aspect-ratio: 1;
+    translate: -50% -50%;
+    scale: calc(1 + var(--pulse, 0.5) * 0.07);
+    z-index: 0;
+    pointer-events: none;
+    will-change: transform, opacity, scale;
+    background: radial-gradient(circle,
+      rgba(232, 186, 96, 0.34) 0%,
+      rgba(212, 168, 67, 0.16) 34%,
+      rgba(184, 137, 42, 0.06) 54%,
+      transparent 70%);
+    filter: blur(18px);
+    opacity: calc(0.55 + var(--pulse, 0.5) * 0.45);
+  }
+  /* Drifting gold dust; each mote's brightness tracks --pulse (the reflection) */
+  .hero-motes {
+    position: absolute; inset: 0; z-index: 1;
+    pointer-events: none; overflow: hidden;
+    will-change: transform;
+  }
+  .mote {
+    position: absolute;
+    width: var(--s); height: var(--s);
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(244, 214, 138, 0.95), rgba(212, 168, 67, 0.5) 60%, transparent 72%);
+    /* Visible at rest (so static / reduced-motion still shows dust); the fall
+       keyframe overrides opacity to fade in and out while animating. */
+    opacity: calc(var(--o, 0.5) * 0.85);
+    /* The pulse reflection rides on brightness, leaving opacity for the fall.
+       transform = the fall; translate (set per-mote in JS) = depth parallax. */
+    filter: brightness(calc(0.6 + var(--pulse, 0.5) * 0.95)) blur(0.4px);
+    animation: fall var(--d, 16s) linear var(--delay, 0s) infinite;
+    will-change: transform, translate, opacity;
+  }
+  @keyframes fall {
+    0%   { transform: translate(0, -16vh);                                opacity: 0; }
+    8%   {                                                                opacity: var(--o, 0.5); }
+    50%  { transform: translate(calc(var(--dx, 10px) * 0.6), 40vh); }
+    86%  {                                                                opacity: var(--o, 0.5); }
+    100% { transform: translate(var(--dx, 10px), 98vh);                  opacity: 0; }
+  }
+
+  .hero {
+    position: relative;
+    z-index: 2;
+    text-align: center;
+    padding-top: var(--space-2xl);
+    padding-bottom: var(--space-2xl);
+  }
+  .hero__crest { margin: 0 auto var(--space-md); display: block; color: var(--gold-bright); will-change: transform; }
+  .hero__title {
+    font-size: var(--text-display);
+    letter-spacing: 0.02em;
+    margin-bottom: 0.3em;
+  }
+  .hero__subtitle {
+    font-family: var(--font-caps);
+    text-transform: uppercase;
+    letter-spacing: 0.42em;
+    font-size: clamp(0.7rem, 0.6rem + 0.5vw, 0.95rem);
+    color: var(--gold-bright);
+    font-weight: 500;
+    margin-bottom: 1.4em;
+    padding-left: 0.42em; /* optical balance for tracking */
+  }
+  .hero__tagline {
+    font-family: var(--font-display);
+    font-style: italic;
+    font-size: clamp(1.3rem, 1rem + 1.4vw, 1.9rem);
+    color: var(--gold-light);
+    letter-spacing: 0.04em;
+    margin-bottom: 0;
+  }
+  .hero__tagline span { white-space: nowrap; }
+  .hero__intro {
+    font-size: var(--text-lead);
+    /* light-on-dark: compensated on leading, tracking, and weight */
+    color: var(--vellum-faded);
+    line-height: 1.8;
+    letter-spacing: 0.01em;
+    font-weight: 500;
+    max-width: 54ch;
+    margin: var(--space-lg) auto 0;
+  }
+  .hero__intro .drop {
+    font-family: var(--font-display);
+    font-size: 3.1em;
+    line-height: 0.78;
+    float: left;
+    margin: 0.06em 0.12em -0.06em 0;
+    color: var(--gold-light);
+    font-weight: 400;
+  }
+  .hero .rule { color: var(--gold-bright); }
+
+  /* ---- Ornamental rule ---- */
+  .rule {
+    display: flex;
+    align-items: center;
+    gap: clamp(0.75rem, 2vw, 1.4rem);
+    justify-content: center;
+    margin: var(--space-md) auto;
+    width: min(100%, 30rem);
+    color: var(--gold);
+  }
+  .rule__line {
+    height: 1px;
+    flex: 1;
+    position: relative;
+    /* gilded: a brighter highlight catches the light through the centre */
+    background: linear-gradient(90deg, transparent,
+      currentColor 26%,
+      color-mix(in oklab, currentColor 45%, white) 50%,
+      currentColor 74%, transparent);
+  }
+  .rule__line::before {
+    content: "";
+    position: absolute;
+    left: 0; right: 0; top: 3px; height: 1px;
+    background: linear-gradient(90deg, transparent, currentColor 42%, currentColor 58%, transparent);
+    opacity: 0.4;
+  }
+  .rule__orn { flex: none; color: var(--gold); }
+  .rule--wide { width: min(100%, 40rem); }
+
+  /* ============================================================
+     MODULES
+     ============================================================ */
+  .modules { padding-top: var(--space-lg); }
+  .modules__head { text-align: center; margin-bottom: var(--space-xl); }
+  .modules__head h2 {
+    font-size: var(--text-h2);
+    color: var(--ink);
+    margin-bottom: 0.5rem;
+  }
+  .modules__head .label { margin-bottom: 1rem; }
+
+  .grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr)); /* 2×2 for the four disciplines */
+    gap: var(--space-md);
+    max-width: 880px;
+    margin-inline: auto;
+  }
+  @media (max-width: 680px) {
+    .grid { grid-template-columns: 1fr; }
+  }
+
+  .panel {
+    position: relative;
+    display: block;
+    text-decoration: none;
+    color: inherit;
+    cursor: pointer;
+    padding: var(--space-md);
+    background: rgba(250, 243, 224, 0.50);
+    -webkit-backdrop-filter: blur(2px);
+    backdrop-filter: blur(2px);
+    border: 1px solid rgba(184, 137, 42, 0.45);
+    border-radius: 2px;
+    box-shadow:
+      inset 0 1px 0 rgba(255, 246, 214, 0.6),
+      0 1px 2px rgba(26, 18, 8, 0.06),
+      0 16px 32px -24px rgba(26, 18, 8, 0.38);
+    transition:
+      transform 0.3s var(--ease-incense),
+      box-shadow 0.3s var(--ease-incense),
+      border-color 0.3s var(--ease-incense);
+    overflow: hidden;
+  }
+  .panel::before { /* gilt corner hairline */
+    content: "";
+    position: absolute;
+    inset: 6px;
+    border: 1px solid rgba(184, 137, 42, 0.22);
+    border-radius: 1px;
+    pointer-events: none;
+  }
+  .panel:hover, .panel:focus-visible {
+    transform: translateY(-3px);
+    border-color: var(--gold-bright);
+    box-shadow:
+      inset 0 1px 0 rgba(255, 246, 214, 0.8),
+      inset 0 0 36px rgba(184, 137, 42, 0.10),
+      0 14px 34px -14px rgba(26, 18, 8, 0.40);
+  }
+  .panel:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
+  /* Clickable affordance: a quiet "enter" line that brightens on hover */
+  .panel__enter {
+    display: inline-flex; align-items: center; gap: 0.45em;
+    margin-top: var(--space-sm);
+    font-family: var(--font-caps);
+    text-transform: uppercase;
+    letter-spacing: 0.2em;
+    font-size: 0.62rem;
+    color: var(--accent);
+    opacity: 0.72;
+    transition: opacity 0.3s var(--ease-incense), gap 0.3s var(--ease-incense);
+  }
+  .panel__enter svg { width: 0.85em; height: 0.85em; }
+  .panel:hover .panel__enter,
+  .panel:focus-visible .panel__enter { opacity: 1; gap: 0.75em; }
+
+  /* Liturgical accents, one per discipline (numeral + faint icon tint).
+     Lightness kept dark enough to clear ≥4.5:1 on vellum. */
+  .panel--prayer    { --accent: oklch(0.47 0.105 78);  } /* gilded light       */
+  .panel--fasting   { --accent: oklch(0.43 0.105 300); } /* Lenten violet      */
+  .panel--belonging { --accent: var(--crimson);         } /* martyr crimson     */
+  .panel--process   { --accent: oklch(0.43 0.085 150); } /* growth, deep green */
+
+  .panel__head {
+    display: flex;
+    align-items: baseline;
+    gap: var(--space-xs);
+    margin-bottom: var(--space-sm);
+  }
+  .panel__numeral {
+    font-family: var(--font-caps);
+    font-size: 1.55rem;
+    line-height: 1;
+    color: var(--accent);
+    letter-spacing: 0.05em;
+    flex: none;
+    min-width: 1.8em;
+  }
+  .panel__icon {
+    position: absolute;
+    top: var(--space-md);
+    right: var(--space-md);
+    width: 58px; height: 58px;
+    /* Carries the discipline's hue, warmed by a touch of gold */
+    color: color-mix(in oklab, var(--accent) 82%, var(--gold));
+    opacity: 1;
+    transition:
+      transform 0.45s var(--ease-incense),
+      filter 0.45s var(--ease-incense);
+  }
+  .panel:hover .panel__icon,
+  .panel:focus-within .panel__icon {
+    transform: translateY(-2px) scale(1.06);
+    filter: drop-shadow(0 0 11px color-mix(in oklab, var(--accent) 55%, transparent));
+  }
+  .panel__title {
+    font-size: var(--text-h3);
+    color: var(--crimson);
+    margin-bottom: 0;
+  }
+  .panel__title small {
+    display: block;
+    font-family: var(--font-caps);
+    font-size: 0.6rem;
+    letter-spacing: 0.32em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-top: 0.6rem;
+  }
+  .panel__body {
+    font-size: 1.04rem;
+    color: var(--ink-soft);
+    margin: 0;
+    max-width: 42ch;
+  }
+
+  /* ============================================================
+     DISCIPLINE SECTIONS — one per card (Prayer / Fasting / …)
+     ============================================================ */
+  .discipline--prayer    { --accent: oklch(0.47 0.105 78);  }
+  .discipline--fasting   { --accent: oklch(0.43 0.105 300); }
+  .discipline--belonging { --accent: var(--crimson);         }
+  .discipline--process   { --accent: oklch(0.43 0.085 150); }
+
+  .discipline {
+    position: relative;
+    overflow: hidden;
+    text-align: center;
+    padding-block: var(--space-lg);
+    scroll-margin-top: var(--space-md);
+  }
+  .discipline > * { position: relative; z-index: 1; } /* content above the watermark */
+
+  /* Saint watermark (line drawing). multiply drops the image's light/pink
+     ground into the parchment; grayscale removes any residual hue, leaving
+     just the ink lines as a faint watermark. */
+  .discipline__watermark {
+    position: absolute;
+    z-index: 0;
+    pointer-events: none;
+    top: 50%;
+    right: clamp(-3%, -2vw, 0%);
+    left: auto;
+    /* centering on `translate`, parallax on `transform` (JS), compression on
+       `scale` — three independent channels that compose without conflict. */
+    translate: 0 -50%;
+    scale: 1.3;
+    width: min(46%, 430px);
+    aspect-ratio: 1;
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: contain;
+    filter: contrast(1.03);
+    mix-blend-mode: multiply;
+    opacity: 0.12;
+    transition: scale 1.9s var(--ease-incense);
+  }
+  .discipline.in-view .discipline__watermark { scale: 1; } /* compress in from larger */
+  .discipline__watermark--left { right: auto; left: clamp(-3%, -2vw, 0%); }
+
+  /* Per-image balance: lighter drawings get more presence, bolder ones less. */
+  .discipline--prayer    .discipline__watermark { opacity: 0.21; }
+  .discipline--fasting   .discipline__watermark { opacity: 0.23; } /* on a darker band */
+  .discipline--belonging .discipline__watermark { opacity: 0.16; }
+  .discipline--process   .discipline__watermark { opacity: 0.17; background-size: 114%; } /* darker band; crop frame */
+
+  /* Tonal banding: a second separation beyond the accent colour. Alternate
+     lessons sit in a recessed, slightly deeper full-bleed band, like inset
+     pages. (100vw is safe: body has overflow-x: hidden.) */
+  .discipline--fasting::before,
+  .discipline--process::before {
+    content: "";
+    position: absolute;
+    z-index: -1;
+    top: 0; bottom: 0; left: 50%;
+    width: 100vw;
+    transform: translateX(-50%);
+    background: color-mix(in oklab, var(--ink) 6%, transparent);
+    box-shadow:
+      inset 0 18px 28px -26px rgba(26, 18, 8, 0.55),
+      inset 0 -18px 28px -26px rgba(26, 18, 8, 0.55);
+  }
+
+  @media (max-width: 680px) {
+    .discipline__watermark {
+      width: 74%;
+      left: 50%; right: auto;
+      translate: -50% -50%;
+    }
+    .discipline--prayer .discipline__watermark { opacity: 0.16; }
+    .discipline--belonging .discipline__watermark { opacity: 0.12; }
+    .discipline--fasting .discipline__watermark,
+    .discipline--process .discipline__watermark { opacity: 0.16; } /* darker bands */
+  }
+  .discipline .rule { color: var(--accent); margin-bottom: var(--space-md); }
+  .discipline__eyebrow {
+    display: inline-flex; align-items: baseline; gap: 0.6em;
+    font-family: var(--font-caps);
+    text-transform: uppercase;
+    letter-spacing: 0.28em;
+    font-size: var(--text-caption);
+    color: var(--accent);
+    margin: 0 0 var(--space-2xs);
+  }
+  .discipline__num { font-size: 1.25em; letter-spacing: 0.05em; }
+  .discipline__title {
+    font-size: var(--text-h2);
+    color: var(--ink);
+    margin-bottom: var(--space-sm);
+  }
+  .discipline__lead {
+    max-width: 56ch;
+    margin: 0 auto;
+    color: var(--ink-soft);
+    font-size: var(--text-lead);
+  }
+
+  /* Saint's quote — the centerpiece of each section */
+  .quote {
+    position: relative;
+    max-width: 44ch;
+    margin: var(--space-lg) auto 0;
+    padding-top: var(--space-md);
+  }
+  .quote::before {
+    content: "\201C";
+    position: absolute; top: -0.18em; left: 50%;
+    transform: translateX(-50%);
+    font-family: var(--font-display);
+    font-size: 5rem; line-height: 1;
+    color: var(--accent);
+    opacity: 0.2;
+    pointer-events: none;
+  }
+  .quote__text {
+    font-family: var(--font-display);
+    font-style: italic;
+    font-size: clamp(1.4rem, 1.15rem + 1.3vw, 2rem);
+    line-height: 1.42;
+    color: var(--ink);
+    margin: 0 0 var(--space-sm);
+    text-wrap: balance;
+  }
+  .quote__cite {
+    font-family: var(--font-caps);
+    text-transform: uppercase;
+    letter-spacing: 0.16em;
+    font-size: 0.72rem;
+    color: var(--accent);
+  }
+
+  /* Action buttons (Watch / Download) */
+  .actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-sm);
+    justify-content: center;
+    margin-top: var(--space-lg);
+  }
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.6em;
+    font-family: var(--font-caps);
+    text-transform: uppercase;
+    letter-spacing: 0.16em;
+    font-size: 0.8rem;
+    font-weight: 500;
+    text-decoration: none;
+    padding: 0.95em 1.7em;
+    border-radius: 2px;
+    border: 1px solid var(--accent);
+    /* deepen the fill slightly so ivory text always clears AA */
+    background-color: color-mix(in oklab, var(--accent) 86%, var(--ink));
+    color: var(--ivory);
+    cursor: pointer;
+    transition:
+      transform 0.12s var(--ease-incense),
+      box-shadow 0.4s var(--ease-incense),
+      background-color 0.4s var(--ease-incense),
+      color 0.4s var(--ease-incense);
+  }
+  .btn svg { width: 1.05em; height: 1.05em; flex: none; }
+  .btn:hover, .btn:focus-visible {
+    transform: translateY(-1px);
+    box-shadow: 0 8px 26px -12px color-mix(in oklab, var(--accent) 70%, transparent);
+  }
+  .btn:active { transform: scale(0.975); }
+  .btn:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
+  .btn--ghost {
+    background-color: transparent;
+    color: var(--accent);
+  }
+  .btn--ghost:hover, .btn--ghost:focus-visible {
+    background-color: color-mix(in oklab, var(--accent) 12%, transparent);
+    box-shadow: none;
+  }
+
+  /* ============================================================
+     ABOUT — the lit nave (light, parchment)
+     ============================================================ */
+  .about {
+    position: relative;
+    margin-top: var(--space-xl);
+    background:
+      radial-gradient(90% 120% at 50% 0%, rgba(184, 137, 42, 0.10), transparent 60%);
+    text-align: center;
+    overflow: hidden;
+  }
+  .about::before, .about::after { /* gilt top/bottom hairlines */
+    content: "";
+    position: absolute; left: 0; right: 0;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, rgba(184,137,42,0.55), transparent);
+  }
+  .about::before { top: 0; }
+  .about::after { bottom: 0; }
+  .about .label { color: var(--gold-deep); }
+  .about__title {
+    font-size: var(--text-h2);
+    color: var(--crimson);
+    margin: var(--space-2xs) 0 var(--space-md);
+  }
+  .about__body {
+    max-width: 58ch;
+    margin: 0 auto var(--space-lg);
+    color: var(--ink-soft);
+    font-size: var(--text-lead);
+    line-height: 1.78;
+  }
+  .about .rule { color: var(--gold); }
+
+  /* ---- Call to action (crimson on light, opens gold on hover) ---- */
+  .cta {
+    display: inline-block;
+    font-family: var(--font-caps);
+    text-transform: uppercase;
+    letter-spacing: 0.28em;
+    font-size: 0.82rem;
+    font-weight: 500;
+    color: var(--ivory);
+    text-decoration: none;
+    padding: 1.05em 2.4em 1.05em 2.68em;
+    border: 1px solid var(--crimson);
+    border-radius: 2px;
+    background-color: var(--crimson);
+    position: relative;
+    box-shadow: 0 6px 18px -10px rgba(122, 31, 46, 0.6);
+    transition:
+      color 0.4s var(--ease-incense),
+      border-color 0.4s var(--ease-incense),
+      box-shadow 0.4s var(--ease-incense),
+      background-color 0.4s var(--ease-incense),
+      transform 0.12s var(--ease-incense);
+  }
+  .cta:active { transform: scale(0.975); }
+  .cta:hover, .cta:focus-visible {
+    color: var(--ink);
+    background-color: var(--gold-bright);
+    border-color: var(--gold-bright);
+    box-shadow: 0 0 30px rgba(212, 168, 67, 0.40);
+  }
+  .cta:focus-visible { outline: 2px solid var(--crimson); outline-offset: 4px; }
+
+  /* ============================================================
+     FOOTER
+     ============================================================ */
+  .foot {
+    text-align: center;
+    padding-block: var(--space-lg);
+  }
+  .foot__seal {
+    color: var(--gold);
+    margin-bottom: var(--space-sm);
+    /* embossed gilt medallion */
+    filter:
+      drop-shadow(0 1px 0 rgba(255, 246, 214, 0.5))
+      drop-shadow(0 2px 4px rgba(26, 18, 8, 0.28));
+  }
+  .foot__name {
+    font-family: var(--font-display);
+    font-size: 1.5rem;
+    color: var(--ink);
+    margin-bottom: 0.4rem;
+  }
+  .foot__sub {
+    font-family: var(--font-caps);
+    text-transform: uppercase;
+    letter-spacing: 0.3em;
+    font-size: 0.66rem;
+    color: var(--gold-deep);
+  }
+
+  /* ============================================================
+     LUXE DETAILS — bound-edition framing, gilt, letterpress
+     ============================================================ */
+
+  /* A double gilt hairline matting the whole page, like a fine binding */
+  .gilt-frame {
+    position: fixed;
+    inset: clamp(9px, 1.4vw, 20px);
+    z-index: var(--z-overlay);
+    pointer-events: none;
+    border: 1px solid color-mix(in oklab, var(--gold) 58%, transparent);
+  }
+  .gilt-frame::before {
+    content: "";
+    position: absolute;
+    inset: 5px;
+    border: 1px solid color-mix(in oklab, var(--gold) 30%, transparent);
+  }
+  /* gilt corner ticks */
+  .gilt-frame::after {
+    content: "";
+    position: absolute;
+    inset: -3px;
+    background:
+      linear-gradient(var(--gold), var(--gold)) left top,
+      linear-gradient(var(--gold), var(--gold)) left top,
+      linear-gradient(var(--gold), var(--gold)) right top,
+      linear-gradient(var(--gold), var(--gold)) right top,
+      linear-gradient(var(--gold), var(--gold)) left bottom,
+      linear-gradient(var(--gold), var(--gold)) left bottom,
+      linear-gradient(var(--gold), var(--gold)) right bottom,
+      linear-gradient(var(--gold), var(--gold)) right bottom;
+    background-repeat: no-repeat;
+    background-size: 14px 1px, 1px 14px;
+    opacity: 0.75;
+  }
+
+  /* Illuminated versal: a raised, gilt opening capital on each discipline lead */
+  .versal {
+    font-family: var(--font-display);
+    font-size: 2.4em;
+    line-height: 0.9;
+    font-style: normal;
+    padding-right: 0.02em;
+    /* accent base with a bright gold band parked off-stage at rest */
+    background-image: linear-gradient(100deg,
+      var(--accent) 42%, var(--gold-light) 50%, var(--accent) 58%);
+    background-size: 280% 100%;
+    background-position: 130% 0;
+    background-repeat: no-repeat;
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: var(--accent);
+    -webkit-text-fill-color: transparent;
+  }
+  @supports not ((-webkit-background-clip: text) or (background-clip: text)) {
+    .versal { -webkit-text-fill-color: var(--accent); }
+  }
+  /* a thread of gold light is drawn across the initial as the lesson lands */
+  .discipline.in-view .versal {
+    animation: gild-versal 1.5s var(--ease-cinema) 0.5s both;
+  }
+  @keyframes gild-versal {
+    from { background-position: 130% 0; }
+    to   { background-position: -30% 0; }
+  }
+
+  /* Letterpress: headings pressed into the parchment (light catch below) */
+  .modules__head h2,
+  .panel__title,
+  .discipline__title,
+  .about__title,
+  .foot__name {
+    text-shadow: 0 1px 0 rgba(255, 250, 232, 0.5);
+  }
+
+  /* Filled buttons gain a thin gilt sheen along the top edge */
+  .btn:not(.btn--ghost) {
+    box-shadow:
+      inset 0 1px 0 rgba(255, 246, 214, 0.22),
+      0 2px 6px -3px rgba(26, 18, 8, 0.3);
+  }
+
+  /* Refined gold scrollbar */
+  html { scrollbar-color: var(--gold-deep) var(--vellum-deep); scrollbar-width: thin; }
+  ::-webkit-scrollbar { width: 12px; }
+  ::-webkit-scrollbar-track { background: var(--vellum-deep); }
+  ::-webkit-scrollbar-thumb {
+    background: linear-gradient(180deg, var(--gold-bright), var(--gold-deep));
+    border-radius: 8px;
+    border: 3px solid var(--vellum-deep);
+  }
+  ::-webkit-scrollbar-thumb:hover {
+    background: linear-gradient(180deg, var(--gold-light), var(--gold));
+  }
+
+  /* ---- Slow living ornament ---- */
+  .breathe { transform-origin: center; animation: turn 60s linear infinite; }
+  @keyframes turn { to { transform: rotate(360deg); } }
+
+  /* ---- The lamp is lit: a barely-there flicker (Prayer only) ---- */
+  .flame {
+    transform-box: fill-box;
+    transform-origin: 50% 100%;
+    animation: flicker 3.8s ease-in-out infinite;
+  }
+  @keyframes flicker {
+    0%, 100% { transform: scaleY(1)    scaleX(1);    opacity: 1;    }
+    50%      { transform: scaleY(1.07) scaleX(0.985); opacity: 0.82; }
+  }
+
+  /* ============================================================
+     SCROLL REVEAL — enhances an already-visible default.
+     Content is fully visible without JS; the .js gate only
+     hides briefly when scripting + IO are confirmed active.
+     ============================================================ */
+  .reveal { opacity: 1; }
+  html.js .reveal {
+    opacity: 0;
+    transform: translateY(22px);
+  }
+  html.js .reveal.in-view {
+    opacity: 1;
+    transform: none;
+    transition:
+      opacity 1.3s var(--ease-cinema),
+      transform 1.3s var(--ease-cinema);
+  }
+  /* The hero title resolves from a soft blur, like incense clearing. */
+  html.js .hero__title.reveal { filter: blur(10px); }
+  html.js .hero__title.reveal.in-view {
+    filter: blur(0);
+    transition:
+      opacity 1.5s var(--ease-cinema),
+      transform 1.5s var(--ease-cinema),
+      filter 1.6s var(--ease-cinema);
+  }
+  /* Stagger children of a revealed group */
+  html.js .stagger.in-view > * {
+    animation: rise 1.25s var(--ease-cinema) both;
+  }
+  html.js .stagger > * { opacity: 1; } /* safe default */
+  html.js .stagger:not(.in-view) > * { opacity: 0; }
+  html.js .stagger.in-view > *:nth-child(1) { animation-delay: 0.00s; }
+  html.js .stagger.in-view > *:nth-child(2) { animation-delay: 0.14s; }
+  html.js .stagger.in-view > *:nth-child(3) { animation-delay: 0.28s; }
+  html.js .stagger.in-view > *:nth-child(4) { animation-delay: 0.42s; }
+  html.js .stagger.in-view > *:nth-child(5) { animation-delay: 0.56s; }
+  @keyframes rise {
+    from { opacity: 0; transform: translateY(22px); }
+    to   { opacity: 1; transform: none; }
+  }
+
+  /* Section-title gold underline draw */
+  .draw { position: relative; display: inline-block; padding-bottom: 0.4em; }
+  .draw::after {
+    content: "";
+    position: absolute;
+    left: 50%; bottom: 0;
+    height: 2px;
+    width: 0;
+    transform: translateX(-50%);
+    background: linear-gradient(90deg, transparent, var(--gold-bright) 25%, var(--gold-light) 50%, var(--gold-bright) 75%, transparent);
+  }
+  html.js .draw::after { transition: width 1.4s var(--ease-incense) 0.25s; }
+  .in-view .draw::after, .draw.in-view::after { width: clamp(8rem, 22vw, 14rem); }
+
+  /* ============================================================
+     RESPONSIVE
+     ============================================================ */
+  @media (max-width: 640px) {
+    .panel__icon { width: 46px; height: 46px; top: 1.3rem; right: 1.3rem; }
+    .hero__subtitle { letter-spacing: 0.32em; }
+    .cta { letter-spacing: 0.2em; padding-inline: 1.8em; }
+  }
+
+  /* ============================================================
+     REDUCED MOTION — everything calm and present, no movement
+     ============================================================ */
+  @media (prefers-reduced-motion: reduce) {
+    html { scroll-behavior: auto; }
+    /* Entrance motion (reveals, stagger, underline draw) is suppressed:
+       content is simply present, no slide/blur/fade-in. */
+    html.js .reveal,
+    html.js .stagger > *,
+    html.js .stagger:not(.in-view) > * {
+      opacity: 1 !important;
+      transform: none !important;
+      filter: none !important;
+      animation: none !important;
+      transition: none !important;
+    }
+    html.js .draw::after { transition: none; width: clamp(8rem, 22vw, 14rem); }
+    /* Interaction transitions and pointer/scroll parallax are suppressed
+       (the parallax loop also never starts; JS returns early). */
+    .panel, .panel__icon, .cta { transition: none !important; }
+    .hero-glow, .hero__crest { transform: none !important; }
+
+    /* Ambient atmosphere is gentle and non-vestibular, so by deliberate
+       choice it keeps breathing: the candle pulse, the falling flakes (their
+       brightness still rides the pulse), the flame, and the slow ornament. */
+  }
+</style>
+</head>
+<body>
+
+  <div class="texture texture--mottle" aria-hidden="true"></div>
+  <div class="texture texture--vignette" aria-hidden="true"></div>
+  <div class="texture texture--grain" aria-hidden="true"></div>
+  <div class="gilt-frame" aria-hidden="true"></div>
+
+  <main class="page">
+
+    <!-- ===================== HERO ===================== -->
+    <header class="hero-band">
+      <div class="hero-glow" aria-hidden="true"></div>
+      <div class="hero-motes" aria-hidden="true"></div>
+      <div class="hero shell">
+      <svg class="hero__crest reveal" width="76" height="76" viewBox="0 0 76 76" fill="none" aria-hidden="true">
+        <g class="breathe" stroke="currentColor" color="var(--gold)" stroke-width="1.4">
+          <circle cx="38" cy="38" r="33" stroke="rgba(184,137,42,0.55)"/>
+          <circle cx="38" cy="38" r="26" stroke="rgba(184,137,42,0.30)"/>
+        </g>
+        <!-- Orthodox three-bar cross -->
+        <g stroke="var(--gold)" color="#B8892A" stroke-width="2.2" stroke-linecap="round">
+          <path d="M38 16 V60" stroke="#B8892A"/>
+          <path d="M28 26 H48" stroke="#B8892A"/>
+          <path d="M24 34 H52" stroke="#B8892A"/>
+          <path d="M30 50 L46 44" stroke="#B8892A"/>
+        </g>
+      </svg>
+
+      <h1 class="hero__title reveal"><span class="foil">Foundations</span></h1>
+      <p class="hero__subtitle reveal">A Program of Catechetical Formation</p>
+      <p class="hero__tagline reveal"><span>Beauty.</span> <span>Goodness.</span> <span>Truth.</span></p>
+
+      <div class="rule reveal" aria-hidden="true">
+        <span class="rule__line"></span>
+        <svg class="rule__orn" width="26" height="26" viewBox="0 0 26 26" fill="none">
+          <path d="M13 1 L25 13 L13 25 L1 13 Z" stroke="currentColor" stroke-width="1"/>
+          <path d="M13 6 L20 13 L13 20 L6 13 Z" fill="currentColor" opacity="0.85"/>
+        </svg>
+        <span class="rule__line"></span>
+      </div>
+
+      <p class="hero__intro reveal">
+        <span class="drop">F</span>oundations is a guided entry into the life of the Orthodox Church,
+        structured around four essential disciplines of Christian formation. It asks for nothing but
+        attention, and offers the slow, unhurried beginning of a work that lasts a lifetime.
+      </p>
+      </div>
+    </header>
+
+    <!-- ===================== MODULES ===================== -->
+    <section class="modules shell" aria-labelledby="modules-title">
+      <div class="modules__head reveal">
+        <p class="label">The Four Disciplines</p>
+        <h2 id="modules-title"><span class="draw">Where Formation Begins</span></h2>
+      </div>
+
+      <div class="grid stagger">
+
+        <!-- I. PRAYER -->
+        <a class="panel panel--prayer" href="#prayer">
+          <svg class="panel__icon" viewBox="0 0 64 64" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round" aria-hidden="true">
+            <path class="flame" d="M32 10 C 38 22 39 28 32 36 C 25 28 26 22 32 10 Z" fill="rgba(212,168,67,0.16)"/>
+            <path d="M32 36 V44"/>
+            <path d="M16 44 C 18 41 46 41 48 44 L 44 51 C 42 55 22 55 20 51 Z" fill="rgba(212,168,67,0.10)"/>
+            <path d="M48 47 C 54 47 56 51 53 54"/>
+          </svg>
+          <div class="panel__head">
+            <span class="panel__numeral">I</span>
+            <h3 class="panel__title">Prayer<small>The First Language</small></h3>
+          </div>
+          <p class="panel__body">
+            The first language of the soul: learning to speak and to listen in the presence of God.
+            We begin where the Church has always begun, with the daily rhythm of prayer as the
+            heartbeat of Christian life.
+          </p>
+          <span class="panel__enter">Enter the session
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12 H19 M13 6 L19 12 L13 18"/></svg>
+          </span>
+        </a>
+
+        <!-- II. FASTING -->
+        <a class="panel panel--fasting" href="#fasting">
+          <svg class="panel__icon" viewBox="0 0 64 64" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M32 54 V20"/>
+            <path d="M32 20 C 29 14 26 12 23 13 C 24 18 27 21 32 22 Z" fill="rgba(212,168,67,0.16)"/>
+            <path d="M32 20 C 35 14 38 12 41 13 C 40 18 37 21 32 22 Z" fill="rgba(212,168,67,0.16)"/>
+            <path d="M32 30 C 28 25 24 23 21 24 C 23 29 27 31 32 31 Z" fill="rgba(212,168,67,0.10)"/>
+            <path d="M32 30 C 36 25 40 23 43 24 C 41 29 37 31 32 31 Z" fill="rgba(212,168,67,0.10)"/>
+            <path d="M32 40 C 28 35 24 33 21 34 C 23 39 27 41 32 41 Z" fill="rgba(212,168,67,0.10)"/>
+            <path d="M32 40 C 36 35 40 33 43 34 C 41 39 37 41 32 41 Z" fill="rgba(212,168,67,0.10)"/>
+          </svg>
+          <div class="panel__head">
+            <span class="panel__numeral">II</span>
+            <h3 class="panel__title">Fasting<small>Made for More</small></h3>
+          </div>
+          <p class="panel__body">
+            To fast is to remember what we are made for. This session explores the theology of bodily
+            discipline, not as punishment but as freedom: the body brought into alignment with the
+            soul's longing.
+          </p>
+          <span class="panel__enter">Enter the session
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12 H19 M13 6 L19 12 L13 18"/></svg>
+          </span>
+        </a>
+
+        <!-- III. BELONGING -->
+        <a class="panel panel--belonging" href="#belonging">
+          <svg class="panel__icon" viewBox="0 0 64 64" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round" aria-hidden="true">
+            <path d="M22 16 H42 C 42 27 36 32 32 32 C 28 32 22 27 22 16 Z" fill="rgba(212,168,67,0.14)"/>
+            <path d="M22 16 H42" stroke-linecap="round"/>
+            <path d="M32 32 V46"/>
+            <path d="M24 50 H40" stroke-linecap="round"/>
+            <ellipse cx="32" cy="46" rx="4" ry="2.4"/>
+            <path d="M32 20 V27 M28.5 23.5 H35.5" stroke-width="1.3" opacity="0.8"/>
+          </svg>
+          <div class="panel__head">
+            <span class="panel__numeral">III</span>
+            <h3 class="panel__title">Belonging<small>Received Into a Body</small></h3>
+          </div>
+          <p class="panel__body">
+            Christianity is not a private arrangement between the soul and God. This session explores
+            what it means to be received into a body: the Church as community, history, and home.
+          </p>
+          <span class="panel__enter">Enter the session
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12 H19 M13 6 L19 12 L13 18"/></svg>
+          </span>
+        </a>
+
+        <!-- IV. THE PROCESS -->
+        <a class="panel panel--process" href="#process">
+          <svg class="panel__icon" viewBox="0 0 64 64" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M18 54 C 20 42 44 42 44 30 C 44 22 28 22 31 13"/>
+            <path d="M31 13 L27 17 M31 13 L35 16" stroke-width="1.3"/>
+            <circle cx="44" cy="30" r="1.6" fill="currentColor"/>
+            <circle cx="33" cy="42" r="1.6" fill="currentColor"/>
+            <circle cx="21" cy="50" r="1.6" fill="currentColor"/>
+            <path d="M31 6 V13 M27.5 9.5 H34.5" opacity="0.85"/>
+          </svg>
+          <div class="panel__head">
+            <span class="panel__numeral">IV</span>
+            <h3 class="panel__title">The Process<small>The Next Step</small></h3>
+          </div>
+          <p class="panel__body">
+            What does it look like to move toward the Church? This session walks through the
+            catechumenate: what is expected, what is offered, and what it means to take the next step.
+          </p>
+          <span class="panel__enter">Enter the session
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12 H19 M13 6 L19 12 L13 18"/></svg>
+          </span>
+        </a>
+
+      </div>
+    </section>
+
+    <!-- ===================== DISCIPLINE SECTIONS ===================== -->
+
+    <!-- I. PRAYER -->
+    <section id="prayer" class="discipline discipline--prayer shell" aria-labelledby="prayer-h">
+      <div class="discipline__watermark" aria-hidden="true" style="background-image: url('assets/prayer-watermark.png')"></div>
+      <div class="reveal">
+        <div class="rule" aria-hidden="true">
+          <span class="rule__line"></span>
+          <svg class="rule__orn" width="26" height="26" viewBox="0 0 26 26" fill="none"><path d="M13 1 L25 13 L13 25 L1 13 Z" stroke="currentColor" stroke-width="1"/><path d="M13 6 L20 13 L13 20 L6 13 Z" fill="currentColor" opacity="0.85"/></svg>
+          <span class="rule__line"></span>
+        </div>
+        <p class="discipline__eyebrow"><span class="discipline__num">I</span> Prayer</p>
+        <h2 id="prayer-h" class="discipline__title">The First Language</h2>
+        <p class="discipline__lead">
+<span class="versal">P</span>rayer is the first language of the soul: learning to speak and to listen in the presence
+          of God. We begin where the Church has always begun, with the daily rhythm of prayer as the
+          heartbeat of Christian life.
+        </p>
+        <figure class="quote">
+          <blockquote class="quote__text">Prayer is by nature a dialogue and a union of man with God. Its effect is to hold the world together.</blockquote>
+          <figcaption class="quote__cite">St. John Climacus &middot; The Ladder of Divine Ascent, Step 28</figcaption>
+        </figure>
+        <div class="actions">
+          <!-- Replace href with the lesson video URL -->
+          <a class="btn" href="#">
+            <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M8 5 L20 12 L8 19 Z"/></svg>Watch the video
+          </a>
+          <!-- Replace href with the PDF file path -->
+          <a class="btn btn--ghost" href="#" download>
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3 V14"/><path d="M7 10 L12 15 L17 10"/><path d="M5 20 H19"/></svg>Download the PDF
+          </a>
+        </div>
+      </div>
+    </section>
+
+    <!-- II. FASTING -->
+    <section id="fasting" class="discipline discipline--fasting shell" aria-labelledby="fasting-h">
+      <div class="discipline__watermark discipline__watermark--left" aria-hidden="true" style="background-image: url('assets/fasting-watermark.png')"></div>
+      <div class="reveal">
+        <div class="rule" aria-hidden="true">
+          <span class="rule__line"></span>
+          <svg class="rule__orn" width="26" height="26" viewBox="0 0 26 26" fill="none"><path d="M13 1 L25 13 L13 25 L1 13 Z" stroke="currentColor" stroke-width="1"/><path d="M13 6 L20 13 L13 20 L6 13 Z" fill="currentColor" opacity="0.85"/></svg>
+          <span class="rule__line"></span>
+        </div>
+        <p class="discipline__eyebrow"><span class="discipline__num">II</span> Fasting</p>
+        <h2 id="fasting-h" class="discipline__title">Made for More</h2>
+        <p class="discipline__lead">
+          <span class="versal">T</span>o fast is to remember what we are made for. This session explores the theology of bodily
+          discipline, not as punishment but as freedom: the body brought into alignment with the
+          soul's longing.
+        </p>
+        <figure class="quote">
+          <blockquote class="quote__text">Fasting is the coercion of nature and the cutting out of everything that delights the palate, the uprooting of evil thoughts, and deliverance from disturbance of the heart.</blockquote>
+          <figcaption class="quote__cite">St. John Climacus &middot; The Ladder of Divine Ascent, Step 14</figcaption>
+        </figure>
+        <div class="actions">
+          <!-- Replace href with the lesson video URL -->
+          <a class="btn" href="#">
+            <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M8 5 L20 12 L8 19 Z"/></svg>Watch the video
+          </a>
+          <!-- Replace href with the PDF file path -->
+          <a class="btn btn--ghost" href="#" download>
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3 V14"/><path d="M7 10 L12 15 L17 10"/><path d="M5 20 H19"/></svg>Download the PDF
+          </a>
+        </div>
+      </div>
+    </section>
+
+    <!-- III. BELONGING -->
+    <section id="belonging" class="discipline discipline--belonging shell" aria-labelledby="belonging-h">
+      <div class="discipline__watermark" aria-hidden="true" style="background-image: url('assets/belonging-watermark.png')"></div>
+      <div class="reveal">
+        <div class="rule" aria-hidden="true">
+          <span class="rule__line"></span>
+          <svg class="rule__orn" width="26" height="26" viewBox="0 0 26 26" fill="none"><path d="M13 1 L25 13 L13 25 L1 13 Z" stroke="currentColor" stroke-width="1"/><path d="M13 6 L20 13 L13 20 L6 13 Z" fill="currentColor" opacity="0.85"/></svg>
+          <span class="rule__line"></span>
+        </div>
+        <p class="discipline__eyebrow"><span class="discipline__num">III</span> Belonging</p>
+        <h2 id="belonging-h" class="discipline__title">Received Into a Body</h2>
+        <p class="discipline__lead">
+          <span class="versal">C</span>hristianity is not a private arrangement between the soul and God. This session explores
+          what it means to be received into a body: the Church as community, history, and home.
+        </p>
+        <figure class="quote">
+          <blockquote class="quote__text">The Church is a hospital, and not a courtroom, for souls. She does not condemn those who come, but heals them.</blockquote>
+          <figcaption class="quote__cite">St. John Chrysostom</figcaption>
+        </figure>
+        <div class="actions">
+          <!-- Replace href with the lesson video URL -->
+          <a class="btn" href="#">
+            <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M8 5 L20 12 L8 19 Z"/></svg>Watch the video
+          </a>
+          <!-- Replace href with the PDF file path -->
+          <a class="btn btn--ghost" href="#" download>
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3 V14"/><path d="M7 10 L12 15 L17 10"/><path d="M5 20 H19"/></svg>Download the PDF
+          </a>
+        </div>
+      </div>
+    </section>
+
+    <!-- IV. THE PROCESS -->
+    <section id="process" class="discipline discipline--process shell" aria-labelledby="process-h">
+      <div class="discipline__watermark discipline__watermark--left" aria-hidden="true" style="background-image: url('assets/process-watermark.png')"></div>
+      <div class="reveal">
+        <div class="rule" aria-hidden="true">
+          <span class="rule__line"></span>
+          <svg class="rule__orn" width="26" height="26" viewBox="0 0 26 26" fill="none"><path d="M13 1 L25 13 L13 25 L1 13 Z" stroke="currentColor" stroke-width="1"/><path d="M13 6 L20 13 L13 20 L6 13 Z" fill="currentColor" opacity="0.85"/></svg>
+          <span class="rule__line"></span>
+        </div>
+        <p class="discipline__eyebrow"><span class="discipline__num">IV</span> The Process</p>
+        <h2 id="process-h" class="discipline__title">The Next Step</h2>
+        <p class="discipline__lead">
+          <span class="versal">W</span>hat does it look like to move toward the Church? This session walks through the
+          catechumenate: what is expected, what is offered, and what it means to take the next step.
+        </p>
+        <figure class="quote">
+          <blockquote class="quote__text">Repentance is the renewal of baptism. It is a contract with God for a second life.</blockquote>
+          <figcaption class="quote__cite">St. John Climacus &middot; The Ladder of Divine Ascent, Step 5</figcaption>
+        </figure>
+        <div class="actions">
+          <!-- Replace href with the lesson video URL -->
+          <a class="btn" href="#">
+            <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M8 5 L20 12 L8 19 Z"/></svg>Watch the video
+          </a>
+          <!-- Replace href with the PDF file path -->
+          <a class="btn btn--ghost" href="#" download>
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3 V14"/><path d="M7 10 L12 15 L17 10"/><path d="M5 20 H19"/></svg>Download the PDF
+          </a>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===================== ABOUT ===================== -->
+    <section class="about" aria-labelledby="about-title">
+      <div class="shell reveal">
+        <p class="label">About This Program</p>
+        <h2 class="about__title" id="about-title"><span class="draw">An Invitation, Not a Funnel</span></h2>
+        <p class="about__body">
+          Foundations is offered in the spirit of the ancient catechumenate: a patient walking-alongside,
+          not a course to be completed and set down. There is no obligation here and nothing to sign. You
+          are welcome simply to come, to listen, and to ask. When you are ready, a catechist will meet you
+          where you are and walk the rest of the way with you, at the pace the soul actually keeps.
+        </p>
+
+        <div class="rule rule--wide" aria-hidden="true">
+          <span class="rule__line"></span>
+          <svg class="rule__orn breathe" width="30" height="30" viewBox="0 0 30 30" fill="none">
+            <circle cx="15" cy="15" r="6" stroke="currentColor" stroke-width="1"/>
+            <path d="M15 1 L19 11 L29 15 L19 19 L15 29 L11 19 L1 15 L11 11 Z" stroke="currentColor" stroke-width="1" opacity="0.7"/>
+          </svg>
+          <span class="rule__line"></span>
+        </div>
+
+        <!-- Replace href with your parish's mailto or contact link -->
+        <a class="cta" href="mailto:catechist@example.org?subject=Foundations%20Program">Speak with a Catechist</a>
+      </div>
+    </section>
+
+    <!-- ===================== FOOTER ===================== -->
+    <footer class="foot shell">
+      <svg class="foot__seal" width="88" height="88" viewBox="0 0 88 88" fill="none" aria-hidden="true">
+        <g stroke="currentColor">
+          <circle cx="44" cy="44" r="40" stroke-width="1.4"/>
+          <circle cx="44" cy="44" r="33.5" stroke-width="0.7" stroke-dasharray="1 5"/>
+          <circle cx="44" cy="44" r="29" stroke-width="0.7"/>
+        </g>
+        <g stroke="currentColor" stroke-width="2.1" stroke-linecap="round">
+          <path d="M44 22 V64"/>
+          <path d="M34 31 H54"/>
+          <path d="M30 39 H58"/>
+          <path d="M37 56 L51 50"/>
+        </g>
+      </svg>
+      <p class="foot__name">Foundations</p>
+      <p class="foot__sub">Beauty · Goodness · Truth</p>
+    </footer>
+
+  </main>
+
+  <script src="https://unpkg.com/lenis@1.1.14/dist/lenis.min.js"></script>
+  <script>
+    /* Confirm scripting before hiding anything (no-JS ships fully visible). */
+    document.documentElement.classList.add('js');
+
+    (function () {
+      var reveals = Array.prototype.slice.call(
+        document.querySelectorAll('.reveal, .stagger, .draw'));
+
+      function show(el) { el.classList.add('in-view'); }
+
+      /* Sow falling gold flakes into the dark hero. Each keeps a parallax
+         depth so they scroll at different rates. Drift + pulse are CSS, so
+         reduced motion simply stills them. */
+      var moteData = [];
+      (function seedMotes() {
+        var host = document.querySelector('.hero-motes');
+        if (!host) return;
+        var frag = document.createDocumentFragment();
+        for (var i = 0; i < 26; i++) {
+          var m = document.createElement('span');
+          m.className = 'mote';
+          m.style.cssText =
+            'left:' + (Math.random() * 100).toFixed(2) + '%;' +
+            'top: 0;' +
+            '--st:' + (4 + Math.random() * 86).toFixed(1) + 'vh;' +
+            '--s:'  + (2 + Math.random() * 4.5).toFixed(1) + 'px;' +
+            '--o:'  + (0.5 + Math.random() * 0.5).toFixed(2) + ';' +
+            '--d:'  + (24 + Math.random() * 22).toFixed(1) + 's;' +
+            '--delay:' + (-Math.random() * 25).toFixed(1) + 's;' +
+            '--dx:' + (Math.random() * 54 - 27).toFixed(0) + 'px;';
+          frag.appendChild(m);
+          /* nearer flakes (bigger) parallax faster → depth from size */
+          moteData.push({ el: m, depth: 0.3 + Math.random() * 1.0 });
+        }
+        host.appendChild(frag);
+      })();
+
+      var prefersReduced = window.matchMedia &&
+        window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+      /* Reveal + watermark-compression observer runs regardless of motion
+         preference: under reduced motion the .reveal/.stagger styles are
+         flattened by CSS, while the gentle watermark compression still plays
+         as each section scrolls into view. */
+      if ('IntersectionObserver' in window) {
+        var io = new IntersectionObserver(function (entries) {
+          entries.forEach(function (entry) {
+            if (entry.isIntersecting) {
+              show(entry.target);
+              io.unobserve(entry.target);
+            }
+          });
+        }, { threshold: 0.16, rootMargin: '0px 0px -8% 0px' });
+        reveals.forEach(function (el) { io.observe(el); });
+      } else {
+        reveals.forEach(show);
+      }
+
+      /* Failsafe: un-hide genuinely hidden content if the observer never fires.
+         Excludes watermarks: they are visible already and must keep their
+         compression for the moment they actually scroll into view. */
+      window.setTimeout(function () {
+        document.querySelectorAll('.reveal, .stagger, .draw').forEach(show);
+      }, 2600);
+
+      /* Watermark parallax: each saint drifts as its section scrolls, at its
+         own amplitude and direction, so they never move in lockstep with the
+         text or one another. Gentle and ambient, so it plays even under
+         reduced motion (transform only; centering lives on `translate`). */
+      (function watermarkParallax() {
+        var wms = Array.prototype.slice.call(document.querySelectorAll('.discipline__watermark'));
+        if (!wms.length) return;
+        /* Half-speed lag: the saint moves at ~half the page's scroll rate, so
+           the text scrolls about twice as fast. The image is centered when its
+           section is centered, drifts down through the section as you scroll,
+           and clips away only as the section leaves. Slight per-saint variation
+           so they don't move in perfect lockstep. (factor 0.5 => content 2x.) */
+        var facs = [0.5, 0.44, 0.56, 0.5];
+        var ticking = false;
+        function update() {
+          var vh = window.innerHeight;
+          for (var j = 0; j < wms.length; j++) {
+            var r = wms[j].parentElement.getBoundingClientRect();
+            var centerOffset = (r.top + r.height / 2) - vh / 2; /* 0 when section centered */
+            var f = facs[j % facs.length];
+            wms[j].style.transform = 'translateY(' + (-f * centerOffset).toFixed(1) + 'px)';
+          }
+          ticking = false;
+        }
+        window.addEventListener('scroll', function () {
+          if (!ticking) { ticking = true; requestAnimationFrame(update); }
+        }, { passive: true });
+        window.addEventListener('resize', update, { passive: true });
+        update();
+      })();
+
+      /* Watermark compression triggers LATE, on its own observer: the section
+         must rise well into the viewport (past ~58% down) before the saint
+         settles, so the compression is appreciable instead of finishing on
+         entry. Ambient, so it runs regardless of motion preference. */
+      if ('IntersectionObserver' in window) {
+        var wmIO = new IntersectionObserver(function (entries) {
+          entries.forEach(function (entry) {
+            if (entry.isIntersecting) {
+              entry.target.classList.add('in-view');
+              wmIO.unobserve(entry.target);
+            }
+          });
+        }, { rootMargin: '0px 0px -50% 0px', threshold: 0.01 });
+        document.querySelectorAll('.discipline').forEach(function (s) { wmIO.observe(s); });
+      } else {
+        document.querySelectorAll('.discipline').forEach(function (s) { s.classList.add('in-view'); });
+      }
+
+      /* Heavier hero motion (pointer/scroll parallax + reactive emboss light)
+         stays suppressed under reduced motion. */
+      /* Momentum smooth-scroll: a slow, weighty glide. Native scroll events
+         still fire, so the parallax handlers keep working. Enabled regardless
+         of reduced motion as an explicit choice (gentle, global), unlike the
+         slide-in reveals which stay suppressed. */
+      if (window.Lenis) {
+        document.documentElement.style.scrollBehavior = 'auto';
+        var lenis = new Lenis({
+          duration: 1.25,
+          easing: function (t) { return 1 - Math.pow(1 - t, 3); },
+          wheelMultiplier: 0.9
+        });
+        (function loop() {
+          function lenisRaf(time) { lenis.raf(time); requestAnimationFrame(lenisRaf); }
+          requestAnimationFrame(lenisRaf);
+        })();
+        document.querySelectorAll('a[href^="#"]').forEach(function (a) {
+          a.addEventListener('click', function (e) {
+            var id = a.getAttribute('href');
+            if (id.length > 1) {
+              var t = document.querySelector(id);
+              if (t) { e.preventDefault(); lenis.scrollTo(t, { offset: 0, duration: 1.4 }); }
+            }
+          });
+        });
+      }
+
+      /* Heavier hero motion (pointer parallax + reactive emboss light) stays
+         suppressed under reduced motion. */
+      /* Reactive depth (pointer-driven): the emboss light, the cursor pull on
+         the gold dust, and the hero parallax. Pointer effects are user-
+         initiated, so they run regardless of reduced motion; the reduced-motion
+         CSS still pins the glow and crest, keeping the heavier drift calm. */
+      var glow  = document.querySelector('.hero-glow');
+      var crest = document.querySelector('.hero__crest');
+      var rootStyle = document.documentElement.style;
+      var tx = 0, ty = 0, cx = 0, cy = 0, sy = window.scrollY || 0;
+      var pmx = -9999, pmy = -9999; /* absolute pointer, for dust attraction */
+
+      window.addEventListener('pointermove', function (e) {
+        tx = (e.clientX / window.innerWidth)  - 0.5;   /* -0.5 .. 0.5 */
+        ty = (e.clientY / window.innerHeight) - 0.5;
+        pmx = e.clientX; pmy = e.clientY;
+      }, { passive: true });
+      window.addEventListener('pointerout', function (e) {
+        if (!e.relatedTarget) { pmx = -9999; pmy = -9999; } /* released on leave */
+      }, { passive: true });
+      window.addEventListener('scroll', function () { sy = window.scrollY || 0; }, { passive: true });
+
+      function frame() {
+        cx += (tx - cx) * 0.07;
+        cy += (ty - cy) * 0.07;
+        /* embossed metal: the lit edge follows the pointer */
+        rootStyle.setProperty('--emb-x', (cx * 2.4).toFixed(2) + 'px');
+        rootStyle.setProperty('--emb-y', (-1.5 + cy * 1.6).toFixed(2) + 'px');
+        if (glow)  glow.style.transform  = 'translate3d(' + (cx * -16).toFixed(1) + 'px,' + (cy * -12).toFixed(1) + 'px,0)';
+        if (crest) crest.style.transform = 'translate3d(' + (cx * 14).toFixed(1) + 'px,' + (cy * 10).toFixed(1) + 'px,0)';
+        /* Gold dust: depth parallax + a soft pull toward the cursor (with a
+           gentle swirl), so moving through the hero stirs the gilt. Rects are
+           read in one pass, then written in one pass, to avoid layout thrash.
+           Attraction is measured from each flake's natural (fall) position by
+           subtracting the translate we applied last frame, so it can't feed
+           back on itself. */
+        for (var k = 0; k < moteData.length; k++) {
+          moteData[k]._r = moteData[k].el.getBoundingClientRect();
+        }
+        var R = 200;
+        for (var k = 0; k < moteData.length; k++) {
+          var md = moteData[k], d = md.depth, r = md._r;
+          var px = cx * -22 * d;
+          var py = cy * -16 * d - sy * 0.16 * d;
+          var natX = r.left + r.width / 2 - (md._lx || 0);
+          var natY = r.top  + r.height / 2 - (md._ly || 0);
+          var dx = pmx - natX, dy = pmy - natY;
+          var dist = Math.sqrt(dx * dx + dy * dy);
+          if (dist < R) {
+            var inf = (1 - dist / R); inf *= inf;        /* soft falloff      */
+            px += dx * inf * 0.32 - dy * inf * 0.12;     /* pull + swirl       */
+            py += dy * inf * 0.32 + dx * inf * 0.12;
+          }
+          md.el.style.translate = px.toFixed(1) + 'px ' + py.toFixed(1) + 'px';
+          md._lx = px; md._ly = py;
+        }
+        requestAnimationFrame(frame);
+      }
+      requestAnimationFrame(frame);
+    })();
+  </script>
+
+</body>
+</html>
