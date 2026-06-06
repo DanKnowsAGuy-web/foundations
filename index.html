@@ -75,6 +75,10 @@
     --emb-x: 0px;
     --emb-y: -1.5px;
 
+    /* Illumination level: 0 in the dark hero, grows toward 1 as you scroll
+       into the page (set by the scroll handler). */
+    --illume: 0;
+
     /* Semantic z-index scale */
     --z-texture: 1;
     --z-content: 2;
@@ -139,10 +143,27 @@
     opacity: 0.23;
     mix-blend-mode: overlay;
   }
-  /* Soft edge vignette: gentle darkening at the page edges for depth */
+  /* Soft edge vignette: gentle darkening at the page edges for depth.
+     It lifts as illumination grows (the page brightens as you scroll in). */
   .texture--vignette {
     z-index: 39;
     background: radial-gradient(135% 115% at 50% 42%, transparent 58%, rgba(26, 18, 8, 0.16) 100%);
+    opacity: calc(1 - var(--illume, 0) * 0.55);
+  }
+  /* The light of Christ spilling into the page: a warm bloom from above whose
+     strength grows with scroll (--illume, set in JS). Soft-light so it warms
+     and lifts the page without blowing out the parchment. */
+  .light-spill {
+    position: fixed;
+    inset: 0;
+    z-index: 38;
+    pointer-events: none;
+    background: radial-gradient(125% 78% at 50% -8%,
+      rgba(246, 212, 130, 0.55) 0%,
+      rgba(232, 186, 96, 0.22) 26%,
+      transparent 58%);
+    mix-blend-mode: soft-light;
+    opacity: var(--illume, 0);
   }
 
   /* ---- Layout scaffolding ---- */
@@ -994,6 +1015,7 @@
 <body>
 
   <div class="texture texture--mottle" aria-hidden="true"></div>
+  <div class="light-spill" aria-hidden="true"></div>
   <div class="texture texture--vignette" aria-hidden="true"></div>
   <div class="texture texture--grain" aria-hidden="true"></div>
   <div class="gilt-frame" aria-hidden="true"></div>
@@ -1404,9 +1426,16 @@
            and clips away only as the section leaves. Slight per-saint variation
            so they don't move in perfect lockstep. (factor 0.5 => content 2x.) */
         var facs = [0.5, 0.44, 0.56, 0.5];
+        var heroBand = document.querySelector('.hero-band');
         var ticking = false;
         function update() {
           var vh = window.innerHeight;
+          /* Illumination grows as the hero scrolls away: Christ's light fills
+             the page. 0 at the top, reaches 1 once the hero has mostly passed. */
+          var hh = heroBand ? heroBand.offsetHeight : vh;
+          var illume = (window.scrollY || 0) / (hh * 0.82);
+          illume = illume < 0 ? 0 : (illume > 1 ? 1 : illume);
+          document.documentElement.style.setProperty('--illume', illume.toFixed(3));
           for (var j = 0; j < wms.length; j++) {
             var r = wms[j].parentElement.getBoundingClientRect();
             var centerOffset = (r.top + r.height / 2) - vh / 2; /* 0 when section centered */
