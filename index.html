@@ -262,6 +262,18 @@
     filter: blur(18px);
     opacity: calc(0.55 + var(--pulse, 0.5) * 0.45);
   }
+  /* Christ Pantocrator, very faded: screen-blended so only His lit form and
+     halo show, and the candle pulse appears to illuminate through Him. */
+  .hero-christ {
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+    pointer-events: none;
+    background: url('assets/Christ.jpg') center 38% / contain no-repeat;
+    mix-blend-mode: screen;
+    opacity: calc(0.09 + var(--pulse, 0.5) * 0.07);
+    filter: saturate(0.9) contrast(1.05);
+  }
   /* Drifting gold dust; each mote's brightness tracks --pulse (the reflection) */
   .hero-motes {
     position: absolute; inset: 0; z-index: 1;
@@ -320,6 +332,7 @@
     color: var(--gold-light);
     letter-spacing: 0.04em;
     margin-bottom: 0;
+    text-wrap: balance;
   }
   .hero__tagline span { white-space: nowrap; }
   .hero__intro {
@@ -334,12 +347,11 @@
   }
   .hero__intro .drop {
     font-family: var(--font-display);
-    font-size: 3.1em;
-    line-height: 0.78;
-    float: left;
-    margin: 0.06em 0.12em -0.06em 0;
+    font-size: 2.3em;
+    line-height: 0.9;
     color: var(--gold-light);
     font-weight: 400;
+    padding-right: 0.02em; /* inline raised cap, sits next to the word */
   }
   .hero .rule { color: var(--gold-bright); }
 
@@ -558,7 +570,7 @@
   /* Per-image balance: lighter drawings get more presence, bolder ones less. */
   .discipline--prayer    .discipline__watermark { opacity: 0.21; }
   .discipline--fasting   .discipline__watermark { opacity: 0.23; } /* on a darker band */
-  .discipline--belonging .discipline__watermark { opacity: 0.16; }
+  .discipline--belonging .discipline__watermark { opacity: 0.21; }
   .discipline--process   .discipline__watermark { opacity: 0.17; background-size: 114%; } /* darker band; crop frame */
 
   /* Tonal banding: a second separation beyond the accent colour. Alternate
@@ -579,15 +591,18 @@
   }
 
   @media (max-width: 680px) {
+    /* keep the alternation (asymmetry) on mobile: right-anchored saints bleed
+       further right, left-anchored ones further left, none centered. */
     .discipline__watermark {
-      width: 74%;
-      left: 50%; right: auto;
-      translate: -50% -50%;
+      width: 82%;
+      right: -20%; left: auto;
+      translate: 0 -50%;
     }
-    .discipline--prayer .discipline__watermark { opacity: 0.16; }
-    .discipline--belonging .discipline__watermark { opacity: 0.12; }
+    .discipline__watermark--left { right: auto; left: -20%; }
+    .discipline--prayer .discipline__watermark { opacity: 0.17; }
+    .discipline--belonging .discipline__watermark { opacity: 0.20; }
     .discipline--fasting .discipline__watermark,
-    .discipline--process .discipline__watermark { opacity: 0.16; } /* darker bands */
+    .discipline--process .discipline__watermark { opacity: 0.16; }
   }
   .discipline .rule { color: var(--accent); margin-bottom: var(--space-md); }
   .discipline__eyebrow {
@@ -986,6 +1001,7 @@
     <!-- ===================== HERO ===================== -->
     <header class="hero-band">
       <div class="hero-glow" aria-hidden="true"></div>
+      <div class="hero-christ" aria-hidden="true"></div>
       <div class="hero-motes" aria-hidden="true"></div>
       <div class="hero shell">
       <svg class="hero__crest reveal" width="76" height="76" viewBox="0 0 76 76" fill="none" aria-hidden="true">
@@ -1004,7 +1020,7 @@
 
       <h1 class="hero__title reveal"><span class="foil">Foundations</span></h1>
       <p class="hero__subtitle reveal">A Program of Catechetical Formation</p>
-      <p class="hero__tagline reveal"><span>Beauty.</span> <span>Goodness.</span> <span>Truth.</span></p>
+      <p class="hero__tagline reveal">The Light of Christ Illumines All</p>
 
       <div class="rule reveal" aria-hidden="true">
         <span class="rule__line"></span>
