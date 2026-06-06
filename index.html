@@ -946,6 +946,47 @@
     background: linear-gradient(180deg, var(--gold-light), var(--gold));
   }
 
+  /* Discreet bell / sound control */
+  .bell-toggle {
+    position: fixed;
+    right: clamp(14px, 2.6vw, 32px);
+    bottom: clamp(14px, 2.6vw, 32px);
+    z-index: 60;
+    width: 42px; height: 42px;
+    padding: 0;
+    display: grid; place-items: center;
+    border-radius: 50%;
+    border: 1px solid color-mix(in oklab, var(--gold) 55%, transparent);
+    background: color-mix(in oklab, var(--ink-warm) 78%, transparent);
+    -webkit-backdrop-filter: blur(5px);
+    backdrop-filter: blur(5px);
+    color: var(--gold-bright);
+    cursor: pointer;
+    opacity: 0.72;
+    transition:
+      color 0.3s var(--ease-incense),
+      border-color 0.3s var(--ease-incense),
+      transform 0.25s var(--ease-incense),
+      opacity 0.3s var(--ease-incense);
+  }
+  .bell-toggle:hover, .bell-toggle:focus-visible {
+    opacity: 1;
+    color: var(--gold-light);
+    border-color: var(--gold-light);
+    transform: translateY(-2px);
+  }
+  .bell-toggle:focus-visible { outline: 2px solid var(--gold-light); outline-offset: 3px; }
+  .bell-toggle svg { width: 21px; height: 21px; }
+  .bell-toggle .bell-slash { opacity: 0; transition: opacity 0.2s; }
+  .bell-toggle[aria-pressed="false"] { color: color-mix(in oklab, var(--gold) 55%, var(--ink)); }
+  .bell-toggle[aria-pressed="false"] .bell-slash { opacity: 1; }
+  /* a soft ring of light when the bell tolls */
+  .bell-toggle.is-ringing { animation: bell-ring 0.7s var(--ease-incense); }
+  @keyframes bell-ring {
+    0%   { box-shadow: 0 0 0 0 rgba(240, 200, 90, 0.5); }
+    100% { box-shadow: 0 0 0 16px rgba(240, 200, 90, 0); }
+  }
+
   /* ---- Slow living ornament ---- */
   .breathe { transform-origin: center; animation: turn 60s linear infinite; }
   @keyframes turn { to { transform: rotate(360deg); } }
@@ -1061,6 +1102,14 @@
   <div class="texture texture--vignette" aria-hidden="true"></div>
   <div class="texture texture--grain" aria-hidden="true"></div>
   <div class="gilt-frame" aria-hidden="true"></div>
+
+  <button class="bell-toggle" type="button" aria-pressed="true" aria-label="Silence the bell" title="Sound">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+      <path d="M18 8.5a6 6 0 1 0-12 0c0 6-2.4 8-2.4 8h16.8s-2.4-2-2.4-8"/>
+      <path d="M13.7 20.5a1.8 1.8 0 0 1-3.4 0"/>
+      <line class="bell-slash" x1="4" y1="3.5" x2="20" y2="20.5"/>
+    </svg>
+  </button>
 
   <main class="page">
 
@@ -1562,6 +1611,70 @@
         requestAnimationFrame(frame);
       }
       requestAnimationFrame(frame);
+    })();
+  </script>
+
+  <script>
+    /* A church-bell toll, synthesized with the Web Audio API (deep strike +
+       bell partials + long decay). Browsers block audio on load, so it rings
+       on the visitor's first interaction; the bell control silences/re-rings
+       it and the preference persists. */
+    (function () {
+      var btn = document.querySelector('.bell-toggle');
+      if (!btn) return;
+      var muted = localStorage.getItem('foundations-bell') === 'off';
+      function setState(on) {
+        btn.setAttribute('aria-pressed', on ? 'true' : 'false');
+        btn.setAttribute('aria-label', on ? 'Silence the bell' : 'Ring the bell');
+      }
+      setState(!muted);
+
+      var actx = null;
+      function ctx() {
+        if (!actx) {
+          try { actx = new (window.AudioContext || window.webkitAudioContext)(); }
+          catch (e) { return null; }
+        }
+        if (actx.state === 'suspended') { actx.resume(); }
+        return actx;
+      }
+      function toll() {
+        var c = ctx(); if (!c) return;
+        var t = c.currentTime;
+        var master = c.createGain();
+        master.gain.setValueAtTime(0.0001, t);
+        master.gain.exponentialRampToValueAtTime(0.15, t + 0.006);
+        master.connect(c.destination);
+        var f0 = 174.6; /* F3 strike tone */
+        var parts = [
+          [0.5, 0.55, 6.5], [1.0, 1.0, 5.0], [1.183, 0.6, 3.2], [1.506, 0.42, 2.6],
+          [2.0, 0.5, 2.0], [2.64, 0.22, 1.2], [3.01, 0.18, 0.95], [4.17, 0.12, 0.6]
+        ];
+        parts.forEach(function (p) {
+          var o = c.createOscillator(); o.type = 'sine'; o.frequency.value = f0 * p[0];
+          var g = c.createGain();
+          g.gain.setValueAtTime(0.0001, t);
+          g.gain.linearRampToValueAtTime(p[1], t + 0.004);
+          g.gain.exponentialRampToValueAtTime(0.0001, t + p[2]);
+          o.connect(g); g.connect(master);
+          o.start(t); o.stop(t + p[2] + 0.1);
+        });
+        btn.classList.remove('is-ringing'); void btn.offsetWidth; btn.classList.add('is-ringing');
+      }
+
+      var rung = false;
+      function firstToll() { if (rung || muted) return; rung = true; toll(); }
+      ['pointerdown', 'touchstart', 'wheel', 'keydown'].forEach(function (ev) {
+        window.addEventListener(ev, firstToll, { once: true, passive: ev !== 'keydown' });
+      });
+
+      btn.addEventListener('click', function () {
+        muted = !muted;
+        rung = true; /* the control was used; don't also first-toll */
+        localStorage.setItem('foundations-bell', muted ? 'off' : 'on');
+        setState(!muted);
+        if (!muted) { toll(); }
+      });
     })();
   </script>
 
