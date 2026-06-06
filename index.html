@@ -826,33 +826,15 @@
   }
 
   /* Illuminated versal: a raised, gilt opening capital on each discipline lead */
+  /* Illuminated initial: a larger opening capital in the discipline's accent */
   .versal {
     font-family: var(--font-display);
     font-size: 2.4em;
     line-height: 0.9;
     font-style: normal;
     padding-right: 0.02em;
-    /* accent base with a bright gold band parked off-stage at rest */
-    background-image: linear-gradient(100deg,
-      var(--accent) 42%, var(--gold-light) 50%, var(--accent) 58%);
-    background-size: 280% 100%;
-    background-position: 130% 0;
-    background-repeat: no-repeat;
-    -webkit-background-clip: text;
-    background-clip: text;
     color: var(--accent);
-    -webkit-text-fill-color: transparent;
-  }
-  @supports not ((-webkit-background-clip: text) or (background-clip: text)) {
-    .versal { -webkit-text-fill-color: var(--accent); }
-  }
-  /* a thread of gold light is drawn across the initial as the lesson lands */
-  .discipline.in-view .versal {
-    animation: gild-versal 1.5s var(--ease-cinema) 0.5s both;
-  }
-  @keyframes gild-versal {
-    from { background-position: 130% 0; }
-    to   { background-position: -30% 0; }
+    text-shadow: 0 1px 0 rgba(255, 250, 232, 0.5);
   }
 
   /* Letterpress: headings pressed into the parchment (light catch below) */
@@ -1470,23 +1452,18 @@
 
       /* Heavier hero motion (pointer parallax + reactive emboss light) stays
          suppressed under reduced motion. */
-      /* Reactive depth (pointer-driven): the emboss light, the cursor pull on
-         the gold dust, and the hero parallax. Pointer effects are user-
-         initiated, so they run regardless of reduced motion; the reduced-motion
-         CSS still pins the glow and crest, keeping the heavier drift calm. */
+      if (prefersReduced || !('IntersectionObserver' in window)) return;
+
+      /* Reactive depth: the pointer steers the emboss light and parallaxes the
+         hero layers; scroll drifts the ray-burst. One lerped rAF loop. */
       var glow  = document.querySelector('.hero-glow');
       var crest = document.querySelector('.hero__crest');
       var rootStyle = document.documentElement.style;
       var tx = 0, ty = 0, cx = 0, cy = 0, sy = window.scrollY || 0;
-      var pmx = -9999, pmy = -9999; /* absolute pointer, for dust attraction */
 
       window.addEventListener('pointermove', function (e) {
         tx = (e.clientX / window.innerWidth)  - 0.5;   /* -0.5 .. 0.5 */
         ty = (e.clientY / window.innerHeight) - 0.5;
-        pmx = e.clientX; pmy = e.clientY;
-      }, { passive: true });
-      window.addEventListener('pointerout', function (e) {
-        if (!e.relatedTarget) { pmx = -9999; pmy = -9999; } /* released on leave */
       }, { passive: true });
       window.addEventListener('scroll', function () { sy = window.scrollY || 0; }, { passive: true });
 
@@ -1498,31 +1475,10 @@
         rootStyle.setProperty('--emb-y', (-1.5 + cy * 1.6).toFixed(2) + 'px');
         if (glow)  glow.style.transform  = 'translate3d(' + (cx * -16).toFixed(1) + 'px,' + (cy * -12).toFixed(1) + 'px,0)';
         if (crest) crest.style.transform = 'translate3d(' + (cx * 14).toFixed(1) + 'px,' + (cy * 10).toFixed(1) + 'px,0)';
-        /* Gold dust: depth parallax + a soft pull toward the cursor (with a
-           gentle swirl), so moving through the hero stirs the gilt. Rects are
-           read in one pass, then written in one pass, to avoid layout thrash.
-           Attraction is measured from each flake's natural (fall) position by
-           subtracting the translate we applied last frame, so it can't feed
-           back on itself. */
+        /* Gold dust: gentle scroll parallax only, each flake at its own rate. */
         for (var k = 0; k < moteData.length; k++) {
-          moteData[k]._r = moteData[k].el.getBoundingClientRect();
-        }
-        var R = 200;
-        for (var k = 0; k < moteData.length; k++) {
-          var md = moteData[k], d = md.depth, r = md._r;
-          var px = cx * -22 * d;
-          var py = cy * -16 * d - sy * 0.16 * d;
-          var natX = r.left + r.width / 2 - (md._lx || 0);
-          var natY = r.top  + r.height / 2 - (md._ly || 0);
-          var dx = pmx - natX, dy = pmy - natY;
-          var dist = Math.sqrt(dx * dx + dy * dy);
-          if (dist < R) {
-            var inf = (1 - dist / R); inf *= inf;        /* soft falloff      */
-            px += dx * inf * 0.32 - dy * inf * 0.12;     /* pull + swirl       */
-            py += dy * inf * 0.32 + dx * inf * 0.12;
-          }
-          md.el.style.translate = px.toFixed(1) + 'px ' + py.toFixed(1) + 'px';
-          md._lx = px; md._ly = py;
+          var md = moteData[k];
+          md.el.style.translate = '0px ' + (-sy * 0.16 * md.depth).toFixed(1) + 'px';
         }
         requestAnimationFrame(frame);
       }
