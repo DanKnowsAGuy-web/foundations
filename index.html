@@ -147,8 +147,8 @@
      It lifts as illumination grows (the page brightens as you scroll in). */
   .texture--vignette {
     z-index: 39;
-    background: radial-gradient(135% 115% at 50% 42%, transparent 58%, rgba(26, 18, 8, 0.16) 100%);
-    opacity: calc(1 - var(--illume, 0) * 0.55);
+    background: radial-gradient(140% 120% at 50% 40%, transparent 50%, rgba(20, 13, 5, 0.32) 100%);
+    opacity: calc(1 - var(--illume, 0) * 0.72);
   }
   /* The light of Christ spilling into the page: a warm bloom from above whose
      strength grows with scroll (--illume, set in JS). Soft-light so it warms
@@ -241,6 +241,20 @@
     0%, 100% { --pulse: 0.32; }
     50%      { --pulse: 1; }
   }
+  /* A faster, irregular flame-flicker for the hero's bottom seam. */
+  @property --kindle {
+    syntax: "<number>";
+    inherits: false;
+    initial-value: 0.75;
+  }
+  @keyframes kindle {
+    0%   { --kindle: 0.5; }
+    20%  { --kindle: 0.98; }
+    36%  { --kindle: 0.7; }
+    55%  { --kindle: 1; }
+    72%  { --kindle: 0.78; }
+    100% { --kindle: 0.5; }
+  }
 
   .hero-band {
     position: relative;
@@ -310,8 +324,10 @@
       rgba(238, 196, 110, 0.28) 38%,
       transparent 100%);
     mix-blend-mode: screen;
-    /* scaled by scroll (--illume), and breathing with the candle (--pulse) */
-    opacity: calc(var(--illume, 0) * (0.6 + var(--pulse, 0.5) * 0.4));
+    /* scaled by scroll (--illume); flickers on its own faster rhythm (--kindle) */
+    --kindle: 0.75;
+    animation: kindle 4s ease-in-out infinite;
+    opacity: calc(var(--illume, 0) * (0.4 + var(--kindle) * 0.6));
   }
   /* Drifting gold dust; each mote's brightness tracks --pulse (the reflection) */
   .hero-motes {
@@ -346,7 +362,9 @@
     z-index: 2;
     text-align: center;
     padding-top: var(--space-2xl);
-    padding-bottom: var(--space-2xl);
+    /* extra dark runway below the intro: more hero to scroll through, so the
+       illumination transition has more time to play out */
+    padding-bottom: calc(var(--space-2xl) + 22vh);
   }
   .hero__crest { margin: 0 auto var(--space-md); display: block; color: var(--gold-bright); will-change: transform; }
   .hero__title {
@@ -1450,8 +1468,9 @@
           /* Illumination grows as the hero scrolls away: Christ's light fills
              the page. 0 at the top, reaches 1 once the hero has mostly passed. */
           var hh = heroBand ? heroBand.offsetHeight : vh;
-          var illume = (window.scrollY || 0) / (hh * 0.82);
-          illume = illume < 0 ? 0 : (illume > 1 ? 1 : illume);
+          var p = (window.scrollY || 0) / (hh * 0.78);
+          p = p < 0 ? 0 : (p > 1 ? 1 : p);
+          var illume = Math.pow(p, 0.55); /* front-loaded: brightens early, not just at the end */
           document.documentElement.style.setProperty('--illume', illume.toFixed(3));
           for (var j = 0; j < wms.length; j++) {
             var r = wms[j].parentElement.getBoundingClientRect();
