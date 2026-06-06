@@ -261,7 +261,7 @@
     isolation: isolate;
     overflow: hidden;
     background: radial-gradient(150% 125% at 50% 0%, var(--ink-warm), oklch(0.115 0.016 68) 60%);
-    animation: pulse 7.5s ease-in-out infinite;
+    animation: pulse 6.5s ease-in-out infinite;
   }
   /* Soft vignette only: depth from shadow at the edges, no geometry */
   .hero-band::before {
@@ -290,12 +290,12 @@
     pointer-events: none;
     will-change: transform, opacity, scale;
     background: radial-gradient(circle,
-      rgba(232, 186, 96, 0.34) 0%,
-      rgba(212, 168, 67, 0.16) 34%,
-      rgba(184, 137, 42, 0.06) 54%,
+      rgba(240, 198, 110, 0.46) 0%,
+      rgba(220, 176, 86, 0.22) 34%,
+      rgba(188, 142, 48, 0.08) 54%,
       transparent 70%);
     filter: blur(18px);
-    opacity: calc(0.55 + var(--pulse, 0.5) * 0.45);
+    opacity: calc(0.44 + var(--pulse, 0.5) * 0.56);
   }
   /* Christ Pantocrator, very faded: screen-blended so only His lit form and
      halo show, and the candle pulse appears to illuminate through Him. */
@@ -308,7 +308,7 @@
        past Him while He stays still; framed a little higher. */
     background: url('assets/Christ.jpg') center 14% / cover fixed no-repeat;
     mix-blend-mode: screen;
-    opacity: calc(0.07 + var(--pulse, 0.5) * 0.05);
+    opacity: calc(0.07 + var(--pulse, 0.5) * 0.07);
     filter: saturate(0.9) contrast(1.05);
   }
   /* The hero's bottom edge kindles as you scroll: a warm band that grows with
@@ -1468,9 +1468,9 @@
           /* Illumination grows as the hero scrolls away: Christ's light fills
              the page. 0 at the top, reaches 1 once the hero has mostly passed. */
           var hh = heroBand ? heroBand.offsetHeight : vh;
-          var p = (window.scrollY || 0) / (hh * 0.78);
+          var p = (window.scrollY || 0) / (hh * 0.5);
           p = p < 0 ? 0 : (p > 1 ? 1 : p);
-          var illume = Math.pow(p, 0.55); /* front-loaded: brightens early, not just at the end */
+          var illume = Math.pow(p, 0.45); /* heavily front-loaded: visible change on the very first scroll */
           document.documentElement.style.setProperty('--illume', illume.toFixed(3));
           for (var j = 0; j < wms.length; j++) {
             var r = wms[j].parentElement.getBoundingClientRect();
