@@ -367,8 +367,9 @@
     position: relative;
     z-index: 2;
     text-align: center;
-    /* extra headroom so Christ's eyes sit clear above the wordmark */
-    padding-top: calc(var(--space-2xl) + 7vh);
+    /* headroom so Christ's eyes sit clear above the wordmark (includes the
+       space the removed crest used to occupy, so the title stays put) */
+    padding-top: calc(var(--space-2xl) + 7vh + 76px + var(--space-md));
     /* extra dark runway below the intro: more hero to scroll through, so the
        illumination transition has more time to play out */
     padding-bottom: calc(var(--space-2xl) + 22vh);
@@ -1070,20 +1071,6 @@
       <div class="hero-motes" aria-hidden="true"></div>
       <div class="hero-seam" aria-hidden="true"></div>
       <div class="hero shell">
-      <svg class="hero__crest reveal" width="76" height="76" viewBox="0 0 76 76" fill="none" aria-hidden="true">
-        <g class="breathe" stroke="currentColor" color="var(--gold)" stroke-width="1.4">
-          <circle cx="38" cy="38" r="33" stroke="rgba(184,137,42,0.55)"/>
-          <circle cx="38" cy="38" r="26" stroke="rgba(184,137,42,0.30)"/>
-        </g>
-        <!-- Orthodox three-bar cross -->
-        <g stroke="var(--gold)" color="#B8892A" stroke-width="2.2" stroke-linecap="round">
-          <path d="M38 16 V60" stroke="#B8892A"/>
-          <path d="M28 26 H48" stroke="#B8892A"/>
-          <path d="M24 34 H52" stroke="#B8892A"/>
-          <path d="M30 50 L46 44" stroke="#B8892A"/>
-        </g>
-      </svg>
-
       <h1 class="hero__title reveal"><span class="foil">Foundations</span></h1>
       <p class="hero__subtitle reveal">A Program of Catechetical Formation</p>
       <p class="hero__tagline reveal">The Light of Christ Illumines All</p>
